@@ -1,0 +1,61 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <input id='recipeName' type='text' placeholder='Recipe Name'>
+    <button onclick="addIngredient()">New Ingredient</button>
+    <div id="ingredientList"></div>
+    <button onclick="save();">Save</button>
+    <p></p>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    
+    <script>
+        var ingredientIndex = 0;
+        function addIngredient() {
+            var itemId = 'item'+ingredientIndex;
+            $("#ingredientList").append("<div id='" + itemId + "' class='ingredientListItem'>\
+<input type='text' class='amount' placeholder='amount' value='" + itemId + "'>\
+<input type='text' class='unit' placeholder='unit'>\
+<input type='text' class='name' placeholder='name'>\
+<button onclick='removeClicked(this);'>Remove</button></div>");
+            ingredientIndex += 1;
+        }
+        
+        function removeClicked(sender) {
+            $(sender).parent().remove();
+        }
+        
+        function newRecipe(name) {
+            return {name:name, ingredients:[]};
+        }
+        
+        function newIngredient(amount, unit, name) {
+            return {amount:amount, unit:unit, name:name};
+        }
+        
+        function save() {
+            var recipe = newRecipe($("#recipeName").val());
+            $(".ingredientListItem").each(function() {
+                var amountVal = $(this).children(".amount").val();
+                var unitVal = $(this).children(".unit").val();
+                var nameVal = $(this).children(".name").val();
+                
+                var ingredient = newIngredient(amountVal, unitVal, nameVal);
+                recipe.ingredients.push(ingredient);
+            });
+            
+            /*$.ajax({
+                url:"create.php",
+                type: 'post',
+                data: JSON.stringify(recipe),
+                contentType: 'application/json',
+                dataType: 'json',
+                success: function(result) {
+                    $("p").html(result.hello);
+                }
+            });*/
+        }
+    </script>
+{% endblock %}
