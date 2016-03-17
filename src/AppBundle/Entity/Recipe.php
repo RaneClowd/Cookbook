@@ -3,6 +3,7 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * Recipe
@@ -32,7 +33,7 @@ class Recipe
      * @ORM\ManyToMany(targetEntity="Ingredient")
      * @ORM\JoinTable(name="recipes_ingredients",
      *      joinColumns={@ORM\JoinColumn(name="recipe_id", referencedColumnName="id")},
-     *      inverseJoinColumns={@JoinColumn(name="ingredient_id", referencedColumnName="id")}
+     *      inverseJoinColumns={@ORM\JoinColumn(name="ingredient_id", referencedColumnName="id")}
      *      )
      */
     private $ingredients;
@@ -76,5 +77,38 @@ class Recipe
     {
         return $this->name;
     }
-}
 
+    /**
+     * Add ingredient
+     *
+     * @param \AppBundle\Entity\Ingredient $ingredient
+     *
+     * @return Recipe
+     */
+    public function addIngredient(\AppBundle\Entity\Ingredient $ingredient)
+    {
+        $this->ingredients[] = $ingredient;
+
+        return $this;
+    }
+
+    /**
+     * Remove ingredient
+     *
+     * @param \AppBundle\Entity\Ingredient $ingredient
+     */
+    public function removeIngredient(\AppBundle\Entity\Ingredient $ingredient)
+    {
+        $this->ingredients->removeElement($ingredient);
+    }
+
+    /**
+     * Get ingredients
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getIngredients()
+    {
+        return $this->ingredients;
+    }
+}

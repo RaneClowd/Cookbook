@@ -46,8 +46,8 @@
                 recipe.ingredients.push(ingredient);
             });
             
-            /*$.ajax({
-                url:"create.php",
+            $.ajax({
+                url:"{{ path("save_recipe") }}",
                 type: 'post',
                 data: JSON.stringify(recipe),
                 contentType: 'application/json',
@@ -55,7 +55,7 @@
                 success: function(result) {
                     $("p").html(result.hello);
                 }
-            });*/
+            });
         }
     </script>
 {% endblock %}
