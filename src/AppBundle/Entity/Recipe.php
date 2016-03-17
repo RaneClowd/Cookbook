@@ -27,6 +27,20 @@ class Recipe
      * @ORM\Column(name="name", type="string", length=255)
      */
     private $name;
+    
+    /**
+     * @ORM\ManyToMany(targetEntity="Ingredient")
+     * @ORM\JoinTable(name="recipes_ingredients",
+     *      joinColumns={@ORM\JoinColumn(name="recipe_id", referencedColumnName="id")},
+     *      inverseJoinColumns={@JoinColumn(name="ingredient_id", referencedColumnName="id")}
+     *      )
+     */
+    private $ingredients;
+    
+    public function __construct()
+    {
+        $this->ingredients = new ArrayCollection();
+    }
 
 
     /**
