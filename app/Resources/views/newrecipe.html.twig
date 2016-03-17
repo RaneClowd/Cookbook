@@ -2,8 +2,11 @@
 
 {% block body %}
     <input id='recipeName' type='text' placeholder='Recipe Name'>
-    <button onclick="addIngredient()">New Ingredient</button>
+    <button onclick="addIngredient();">New Ingredient</button>
     <div id="ingredientList"></div>
+    <hr>
+    <button onclick="addStep();">New Step</button>
+    <div id="stepList"></div>
     <button onclick="save();">Save</button>
     <p></p>
 {% endblock %}
@@ -23,12 +26,21 @@
             ingredientIndex += 1;
         }
         
+        var stepIndex = 0;
+        function addStep() {
+            var itemId = 'step'+stepIndex;
+            $("#stepList").append("<div id='" + itemId + "' class='stepListItem'>\
+<textarea rows='4' cols='50'></textarea>\
+<button onclick='removeClicked(this);'>Remove</button></div>");
+            stepIndex += 1;
+        }
+        
         function removeClicked(sender) {
             $(sender).parent().remove();
         }
         
         function newRecipe(name) {
-            return {name:name, ingredients:[]};
+            return {name:name, ingredients:[], steps:[]};
         }
         
         function newIngredient(amount, unit, name) {
@@ -45,6 +57,10 @@
                 var ingredient = newIngredient(amountVal, unitVal, nameVal);
                 recipe.ingredients.push(ingredient);
             });
+            $(".stepListItem").each(function() {
+                var step = $(this).children("textarea").val();
+                recipe.steps.push(step);
+            })
             
             $.ajax({
                 url:"{{ path("save_recipe") }}",

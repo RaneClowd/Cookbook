@@ -1,6 +1,9 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <a href="{{ path('new_recipe') }}">New</a><br>
-    Show a couple of recipes here.
+    <a href="{{ path('new_recipe') }}">New</a>
+    <hr>
+    {% for recipe in recipes %}
+        <a href="{{ path('recipe_detail', { 'id': recipe.id })}}">{{ recipe.name }}</a><br>
+    {% endfor %}
 {% endblock %}

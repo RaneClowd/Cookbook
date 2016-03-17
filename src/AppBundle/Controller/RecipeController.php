@@ -22,6 +22,15 @@ class RecipeController extends Controller
     }
     
     /**
+     * @Route("/recipe/{id}", name="recipe_detail")
+     */
+    public function recipeDetailAction($id)
+    {
+        $recipe = $this->getDoctrine()->getRepository('AppBundle:Recipe')->findOneByIdJoinedToFooditems($id);
+        return $this->render('recipedetail.html.twig', array( 'recipe' => $recipe));
+    }
+    
+    /**
      * @Route("/saveRecipe", name="save_recipe")
      */
     public function saveRecipeAction(Request $request)
@@ -48,6 +57,10 @@ class RecipeController extends Controller
                 $em->persist($ingredient);
                 
                 $recipe->addIngredient($ingredient);
+            }
+            
+            foreach($data->steps as $step) {
+                $recipe->getSteps()[] = $step;
             }
         }
         

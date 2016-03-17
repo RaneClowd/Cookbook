@@ -10,4 +10,16 @@ namespace AppBundle\Repository;
  */
 class RecipeRepository extends \Doctrine\ORM\EntityRepository
 {
+    public function findOneByIdJoinedToFooditems($id)
+    {
+        $query = $this->getEntityManager()
+            ->createQuery(
+                'SELECT r, i, f FROM AppBundle:Recipe r
+                JOIN r.ingredients i
+                JOIN i.fooditem f
+                WHERE r.id = :id'
+            )->setParameter('id', $id);
+        
+        return $query->getSingleResult();
+    }
 }

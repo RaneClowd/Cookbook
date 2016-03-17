@@ -13,6 +13,8 @@ class MainController extends Controller
      */
     public function indexAction(Request $request)
     {
-        return $this->render('default/index.html.twig');
+        $recipeRepository = $this->getDoctrine()->getRepository('AppBundle:Recipe');
+        $recipes = $recipeRepository->findAll();
+        return $this->render('default/index.html.twig', array( 'recipes' => $recipes));
     }
 }

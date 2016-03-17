@@ -38,6 +38,13 @@ class Recipe
      */
     private $ingredients;
     
+    /**
+     * @var array
+     *
+     * @ORM\Column(name="steps", type="simple_array")
+     */
+    private $steps;
+    
     public function __construct()
     {
         $this->ingredients = new ArrayCollection();
@@ -110,5 +117,29 @@ class Recipe
     public function getIngredients()
     {
         return $this->ingredients;
+    }
+
+    /**
+     * Set steps
+     *
+     * @param array $steps
+     *
+     * @return Recipe
+     */
+    public function setSteps($steps)
+    {
+        $this->steps = $steps;
+
+        return $this;
+    }
+
+    /**
+     * Get steps
+     *
+     * @return array
+     */
+    public function getSteps()
+    {
+        return $this->steps;
     }
 }
