@@ -39,9 +39,11 @@ class Recipe
     private $ingredients;
     
     /**
-     * @var array
-     *
-     * @ORM\Column(name="steps", type="simple_array")
+     * @ORM\ManyToMany(targetEntity="Step")
+     * @ORM\JoinTable(name="recipes_steps",
+     *      joinColumns={@ORM\JoinColumn(name="recipe_id", referencedColumnName="id")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="step_id", referencedColumnName="id")}
+     *      )
      */
     private $steps;
     
@@ -120,23 +122,33 @@ class Recipe
     }
 
     /**
-     * Set steps
+     * Add step
      *
-     * @param array $steps
+     * @param \AppBundle\Entity\Step $step
      *
      * @return Recipe
      */
-    public function setSteps($steps)
+    public function addStep(\AppBundle\Entity\Step $step)
     {
-        $this->steps = $steps;
+        $this->steps[] = $step;
 
         return $this;
     }
 
     /**
+     * Remove step
+     *
+     * @param \AppBundle\Entity\Step $step
+     */
+    public function removeStep(\AppBundle\Entity\Step $step)
+    {
+        $this->steps->removeElement($step);
+    }
+
+    /**
      * Get steps
      *
-     * @return array
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getSteps()
     {

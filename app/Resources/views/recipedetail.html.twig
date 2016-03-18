@@ -1,11 +1,12 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
+    <h1>{{ recipe.name }}</h1>
     {% for ingredient in recipe.ingredients %}
         {{ ingredient.amount }} {{ ingredient.measure }} {{ ingredient.fooditem.name }}<br>
     {% endfor %}
     <hr>
     {% for step in recipe.steps %}
-        <p>{{ step }}</p>
+        <p><strong>#{{ step.position }}</strong> {{ step.description }}</p>
     {% endfor %}
 {% endblock %}

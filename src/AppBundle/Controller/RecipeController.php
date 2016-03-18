@@ -8,6 +8,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 use AppBundle\Entity\Recipe;
+use AppBundle\Entity\Step;
 use AppBundle\Entity\Ingredient;
 use AppBundle\Entity\FoodItem;
 
@@ -59,8 +60,16 @@ class RecipeController extends Controller
                 $recipe->addIngredient($ingredient);
             }
             
-            foreach($data->steps as $step) {
-                $recipe->getSteps()[] = $step;
+            $stepOrder = 1;
+            foreach($data->steps as $stepDescription) {
+                $step = new Step();
+                $step->setDescription($stepDescription);
+                $step->setPosition($stepOrder);
+                $em->persist($step);
+                
+                $recipe->addStep($step);
+                
+                $stepOrder += 1;
             }
         }
         

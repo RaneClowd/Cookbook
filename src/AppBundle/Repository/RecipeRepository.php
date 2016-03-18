@@ -14,9 +14,10 @@ class RecipeRepository extends \Doctrine\ORM\EntityRepository
     {
         $query = $this->getEntityManager()
             ->createQuery(
-                'SELECT r, i, f FROM AppBundle:Recipe r
+                'SELECT r, i, f, s FROM AppBundle:Recipe r
                 JOIN r.ingredients i
                 JOIN i.fooditem f
+                JOIN r.steps s
                 WHERE r.id = :id'
             )->setParameter('id', $id);
         
