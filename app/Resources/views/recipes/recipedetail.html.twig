@@ -1,7 +1,14 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <h1>{{ recipe.name }}</h1>
+    <h1>
+        {{ recipe.name }}
+        {% if inCart %}
+            <button id="planBtn" class="btn btn-danger" onclick="unplan();">Remove</button>
+        {% else %}
+            <button id="planBtn" class="btn btn-default" onclick="plan();">Add</button>
+        {% endif %}
+    </h1>
     {% for ingredient in recipe.ingredients %}
         {{ ingredient.amount }} {{ ingredient.measure }} {{ ingredient.fooditem.name }}<br>
     {% endfor %}
@@ -9,4 +16,42 @@
     {% for step in recipe.steps %}
         <p><strong>#{{ step.position }}</strong> {{ step.description }}</p>
     {% endfor %}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+
+    <script>
+        function plan() {
+            $.ajax({
+                url:"{{ path('add_to_planned', {'id': recipe.id}) }}",
+                type: 'get',
+                success: function() {
+                    $('#planBtn').removeClass('btn-default')
+                                    .addClass('btn-danger')
+                                    .html('Remove')
+                                    .attr('onclick', 'unplan();');
+                },
+                error: function() {
+                    displayMessageAlertWithClass('alert-danger', 'Error! Try again?');
+                }
+            });
+        }
+        
+        function unplan() {
+            $.ajax({
+                url:"{{ path('remove_from_planned', {'id': recipe.id}) }}",
+                type: 'get',
+                success: function() {
+                    $('#planBtn').removeClass('btn-danger')
+                                    .addClass('btn-default')
+                                    .html('Add')
+                                    .attr('onclick', 'plan();');
+                },
+                error: function() {
+                    displayMessageAlertWithClass('alert-danger', 'Error! Try again?');
+                }
+            })
+        }
+    </script>
 {% endblock %}

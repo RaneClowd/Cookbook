@@ -23,4 +23,16 @@ class RecipeRepository extends \Doctrine\ORM\EntityRepository
         
         return $query->getSingleResult();
     }
+    
+    public function findByIdsJoinedToFooditems($ids) {
+        $query = $this->getEntityManager()
+            ->createQuery(
+                'SELECT r, i, f FROM AppBundle:Recipe r
+                JOIN r.ingredients i
+                JOIN i.fooditem f
+                WHERE r.id in (:ids)'
+            )->setParameter('ids', $ids);
+        
+        return $query->getResult();
+    }
 }

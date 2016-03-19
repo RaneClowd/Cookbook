@@ -11,6 +11,7 @@ use AppBundle\Entity\Recipe;
 use AppBundle\Entity\Step;
 use AppBundle\Entity\Ingredient;
 use AppBundle\Entity\FoodItem;
+use AppBundle\ViewEntity\Cart;
 
 class RecipeController extends Controller
 {
@@ -35,10 +36,11 @@ class RecipeController extends Controller
     /**
      * @Route("/recipe/{id}", name="recipe_detail")
      */
-    public function recipeDetailAction($id)
+    public function recipeDetailAction(Request $request, $id)
     {
         $recipe = $this->getDoctrine()->getRepository('AppBundle:Recipe')->findOneByIdJoinedToFooditems($id);
-        return $this->render('recipes/recipedetail.html.twig', array( 'recipe' => $recipe));
+        return $this->render('recipes/recipedetail.html.twig', array( 'recipe' => $recipe,
+                                                                     'inCart' => Cart::currentCart($request)->hasRecipe($recipe->getId())));
     }
     
     /**
