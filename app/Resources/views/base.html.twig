@@ -42,11 +42,27 @@
                     </div>
                 </div>
             </nav>
+            <div id="alertTemplate" class="alert alert-dismissible" role="alert" style="display: none;">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
             {% block body %}{% endblock %}
         </div>
         {% block javascripts %}
             <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
             <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+        
+            <script>
+                function displayMessageAlertWithClass(cls, msg) {
+                    var template = $('#alertTemplate');
+                    var newAlert = template.clone();
+                    newAlert.addClass(cls);
+                    newAlert.append(msg);
+                    newAlert.show();
+                    template.after(newAlert);
+                }
+            </script>
         {% endblock %}
     </body>
 </html>

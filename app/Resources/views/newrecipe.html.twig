@@ -1,11 +1,6 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <div id="alertTemplate" class="alert alert-dismissible" role="alert" style="display: none;">
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-        </button>
-    </div>
     <input id='recipeName' type='text' class="form-control" placeholder='Recipe Name'>
     <hr>
     <form class="form-inline" role="form">
@@ -87,15 +82,6 @@
         
         function newIngredient(amount, unit, name) {
             return {amount:amount, unit:unit, name:name};
-        }
-        
-        function displayMessageAlertWithClass(cls, msg) {
-            var template = $('#alertTemplate');
-            var newAlert = template.clone();
-            newAlert.addClass(cls);
-            newAlert.append(msg);
-            newAlert.show();
-            template.after(newAlert);
         }
         
         function showSaving(saveBtn) {
