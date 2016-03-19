@@ -23,12 +23,22 @@ class RecipeController extends Controller
     }
     
     /**
+     * @Route("/all", name="recipe_list")
+     */
+    public function listRecipesAction()
+    {
+        $recipeRepository = $this->getDoctrine()->getRepository('AppBundle:Recipe');
+        $recipes = $recipeRepository->findAll();
+        return $this->render('recipes/recipelist.html.twig', array( 'recipes' => $recipes));
+    }
+    
+    /**
      * @Route("/recipe/{id}", name="recipe_detail")
      */
     public function recipeDetailAction($id)
     {
         $recipe = $this->getDoctrine()->getRepository('AppBundle:Recipe')->findOneByIdJoinedToFooditems($id);
-        return $this->render('recipedetail.html.twig', array( 'recipe' => $recipe));
+        return $this->render('recipes/recipedetail.html.twig', array( 'recipe' => $recipe));
     }
     
     /**
@@ -36,6 +46,14 @@ class RecipeController extends Controller
      */
     public function saveRecipeAction(Request $request)
     {
+        // TODO: ingredients need notes
+        // TODO: should be able to type and see 1/3 rather than .3333
+        // TODO: ingredients divided by sections?
+        // TODO: recipe servings and times
+        // TODO: disable enter on form
+        // TODO: form validation (for name and things like that)
+        
+        
         $em = $this->getDoctrine()->getManager();
         
         $content = $request->getContent();

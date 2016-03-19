@@ -1,0 +1,9 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    {% if recipes is empty %}
+        No recipes yet. <a href="{{ path('new_recipe')}}">Make some!</a>
+    {% else %}
+        {% block recipeList %}{% endblock %}
+    {% endif %}
+{% endblock %}

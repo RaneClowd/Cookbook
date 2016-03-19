@@ -1,11 +1,16 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
+    <div id="alertTemplate" class="alert alert-dismissible" role="alert" style="display: none;">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
     <input id='recipeName' type='text' class="form-control" placeholder='Recipe Name'>
     <hr>
     <form class="form-inline" role="form">
         <div id="ingredientList">
-                <div id='ingredient0' class="form-group" style="display: none;">
+                <div id='ingredientTemplate' class="form-group" style="display: none;">
                         <input type='text' class='amount form-control' placeholder='amount' oninput="checkIsLast(this);">
                         <input type='text' class='unit form-control' placeholder='unit' oninput="checkIsLast(this);">
                         <input type='text' class='name form-control' placeholder='name' oninput="checkIsLast(this);">
@@ -15,12 +20,13 @@
     <hr>
     <form class="form-inline" role="form">
         <div id="stepList">
-                <div id='step0' style="display: none;">
-                        <textarea rows='4' cols='50' class="form-control" oninput="checkIsLast(this);"></textarea>
+                <div id='stepTemplate' style="display: none;">
+                        <textarea rows='5' cols='80' class="form-control" oninput="checkIsLast(this);"></textarea>
                 </div>
         </div>
     </form>
-    <button class="btn btn-default" onclick="save();">Save</button>
+    <br>
+    <button id="saveBtn" class="btn btn-default" onclick="save();">Save</button>
     <p></p>
 {% endblock %}
 
@@ -54,19 +60,19 @@
         function removableClonedFrom(template) {
             var newItem = template.clone();
             newItem.removeAttr('id');
-            if (loadFinished == true) newItem.append("<button onclick='removeClicked(this);' class='btn btn-default'>&times</button>");
+            if (loadFinished == true) newItem.append("<button onclick='removeClicked(this);' class='btn btn-default'>&times;</button>");
             newItem.show();
             return newItem;
         }
         
         function addIngredient() {
-            var newIngredient = removableClonedFrom( $("#ingredient0") );
+            var newIngredient = removableClonedFrom( $("#ingredientTemplate") );
             newIngredient.addClass('ingredientListItem');
             $("#ingredientList").append(newIngredient);
         }
         
         function addStep() {
-            var newStep = removableClonedFrom( $("#step0") );
+            var newStep = removableClonedFrom( $("#stepTemplate") );
             newStep.addClass('stepListItem');
             $("#stepList").append(newStep);
         }
@@ -83,7 +89,50 @@
             return {amount:amount, unit:unit, name:name};
         }
         
+        function displayMessageAlertWithClass(cls, msg) {
+            var template = $('#alertTemplate');
+            var newAlert = template.clone();
+            newAlert.addClass(cls);
+            newAlert.append(msg);
+            newAlert.show();
+            template.after(newAlert);
+        }
+        
+        function showSaving(saveBtn) {
+            var notifier = $('<span class="label label-default"></span>')
+            notifier.html("Saving...");
+            saveBtn.hide();
+            saveBtn.before(notifier);
+            return notifier;
+        }
+        
+        function saveComplete(notifier) {
+            displayMessageAlertWithClass('alert-success', $('#recipeName').val() + ' recipe saved!');
+            notifier.remove();
+            resetForm();
+        }
+        
+        function resetForm() {
+            $(".ingredientListItem").remove();
+            $(".stepListItem").remove();
+            
+            $('#recipeName').val('');
+            addIngredient();
+            addStep();
+            
+            $('#saveBtn').show();
+        }
+        
+        function saveError(notifier, saveBtn) {
+            notifier.remove();
+            displayMessageAlertWithClass('alert-danger', 'Error! Try again?');
+            
+            $('#saveBtn').show();
+        }
+        
         function save() {
+            $('.alert:visible').remove();
+            
             var recipe = newRecipe($("#recipeName").val());
             $(".ingredientListItem").each(function() {
                 var amountVal = $(this).children(".amount").val();
@@ -93,12 +142,21 @@
                 if (amountVal != '' || unitVal != '' || nameVal != '') {
                     var ingredient = newIngredient(amountVal, unitVal, nameVal);
                     recipe.ingredients.push(ingredient);
+                } else {
+                    $(this).remove();
                 }
             });
             $(".stepListItem").each(function() {
                 var step = $(this).children("textarea").val();
-                if (step != '') recipe.steps.push(step);
-            })
+                if (step != '') {
+                    recipe.steps.push(step);
+                } else {
+                    $(this).remove();
+                }
+            });
+            
+            var saveBtn = $('#saveBtn');
+            var notifier = showSaving(saveBtn);
             
             $.ajax({
                 url:"{{ path("save_recipe") }}",
@@ -107,7 +165,10 @@
                 contentType: 'application/json',
                 dataType: 'json',
                 success: function(result) {
-                    $("p").html(result.hello);
+                    saveComplete(notifier);
+                },
+                error: function () {
+                    saveError(notifier, saveBtn);
                 }
             });
         }
