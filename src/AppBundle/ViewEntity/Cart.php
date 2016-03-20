@@ -11,15 +11,12 @@ class Cart
     protected $recipe_ids;
     
     public static function currentCart(Request $request) {
-        $session = $request->getSession();
-        
-        $cart = $session->get('planned_meals');
+        $cart = $request->getSession()->get('planned_meals');
         if (empty($cart)) {
             $cart = new Cart();
-            $cart = $session->set('planned_meals', $cart);
-            return $cart;
+            dump($cart);
+            $request->getSession()->set('planned_meals', $cart);
         }
-        
         return $cart;
     }
     
