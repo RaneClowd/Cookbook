@@ -16,8 +16,24 @@ abstract class Measure
         } else if ($type == 'weight') {
             return new WeightMeasure();
         } else {
-            throw new Exception('Error: unrecognized type '.$type);
+            throw new Exception('Unrecognized measurement type: '.$type);
         }
+    }
+    
+    public function getAmountInLargestUnit()
+    {
+        foreach($this->getAvailableMeasureUnits() as $unit => $scale) {
+            var_dump($unit, $scale, $this->amount);
+            if ( !empty($returnUnit) && $this->amount < $returnScale) {
+                break;
+            } else {
+                echo 'setting stuff';
+                $returnUnit = $unit;
+                $returnScale = $scale;
+            }
+        }
+        
+        return array('val' => ($this->amount / $returnScale), 'unit' => $returnUnit);
     }
     
     public function getAmount()

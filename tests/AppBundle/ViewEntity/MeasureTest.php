@@ -9,9 +9,10 @@ class MeasureTest extends \PHPUnit_Framework_TestCase
     public function testConversion()
     {
         $volumeMeasure = Measure::getMeasureType('volume');
-        $volumeMeasure->setAmount(4, "fl ounce");
-        $this->assertEquals(118.294, $volumeMeasure->getAmount());
+        $volumeMeasure->setAmount(8, 'teaspoon');
         
-        // TODO: replace this test with something more useful
+        $largestAmount = $volumeMeasure->getAmountInLargestUnit();
+        $this->assertEquals('tablespoon', $largestAmount['unit']);
+        $this->assertEquals(2.666, $largestAmount['val']);
     }
 }
