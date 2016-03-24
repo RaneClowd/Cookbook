@@ -4,6 +4,11 @@ namespace AppBundle\ViewEntity;
 
 class VolumeMeasure extends Measure
 {
+    public static function getMeasureName()
+    {
+        return "Volume";
+    }
+    
     public static function getAvailableMeasureUnits() {
         return array("ml"           =>   1.0,
                      "teaspoon"     =>   4.9289,

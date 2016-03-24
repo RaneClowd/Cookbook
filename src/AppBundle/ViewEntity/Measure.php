@@ -6,18 +6,30 @@ abstract class Measure
 {
     protected $amount;
     
-    public static function getAvailableMeasureUnits() {
-        return new Exception('needs to be overriden!');
+    public static function getMeasureName()
+    {
+        throw new Exception('needs to be overriden!');
     }
     
-    public static function getMeasureType($type) {
-        if ($type == 'volume') {
-            return new VolumeMeasure();
-        } else if ($type == 'weight') {
-            return new WeightMeasure();
-        } else {
-            throw new Exception('Unrecognized measurement type: '.$type);
+    public static function getAvailableMeasureUnits()
+    {
+        throw new Exception('needs to be overriden!');
+    }
+    
+    public static function allMeasureClasses()
+    {
+        return array(VolumeMeasure::class, WeightMeasure::class);
+    }
+    
+    public static function measureTypeForUnit($unit)
+    {
+        foreach(Measure::allMeasureClasses() as $measureClass) {
+            if (in_array($unit, $measureClass::getAvailableMeasureUnits)) {
+                return new $measureClass();
+            }
         }
+        
+        throw new Exception('Unrecognized measurement type: '.$type);
     }
     
     public function getAmountInLargestUnit()
@@ -27,7 +39,6 @@ abstract class Measure
             if ( !empty($returnUnit) && $this->amount < $returnScale) {
                 break;
             } else {
-                echo 'setting stuff';
                 $returnUnit = $unit;
                 $returnScale = $scale;
             }

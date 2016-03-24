@@ -3,6 +3,7 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use AppBundle\ViewEntity\Measure;
 
 /**
  * @ORM\Entity
@@ -27,9 +28,9 @@ class Ingredient
     /**
      * @var string
      *
-     * @ORM\Column(name="measure", type="string", length=255)
+     * @ORM\Column(name="unit", type="string", length=255)
      */
-    private $measure;
+    private $unit;
     
     /**
      * @var int
@@ -37,6 +38,8 @@ class Ingredient
      * @ORM\Column(name="amount", type="integer")
      */
     private $amount;
+    
+    private $measure;
 
     /**
      * Get id
@@ -49,27 +52,28 @@ class Ingredient
     }
 
     /**
-     * Set measure
+     * Set unit
      *
      * @param string $measure
      *
      * @return Ingredient
      */
-    public function setMeasure($measure)
+    public function setUnit($unit)
     {
-        $this->measure = $measure;
+        $this->unit = $unit;
+        $this->updateMeasure();
 
         return $this;
     }
 
     /**
-     * Get measure
+     * Get unit
      *
      * @return string
      */
-    public function getMeasure()
+    public function getUnit()
     {
-        return $this->measure;
+        return $this->unit;
     }
 
     /**
@@ -82,6 +86,7 @@ class Ingredient
     public function setAmount($amount)
     {
         $this->amount = $amount;
+        $this->updateMeasure();
 
         return $this;
     }
@@ -118,5 +123,16 @@ class Ingredient
     public function getFooditem()
     {
         return $this->fooditem;
+    }
+    
+    private function updateMeasure()
+    {
+        if (empty($this->measure) && !empty($this->amount) && !empty($this->unit)) {
+            $this->measure = Measure::measureTypeForUnit($this->unit);
+        }
+        
+        if ( !empty($this->measure)) {
+            $this->measure->setAmount($this->amount, $this->unit);
+        }
     }
 }
