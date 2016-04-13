@@ -6,24 +6,24 @@
     <form class="form-inline" role="form">
         <div id="ingredientList">
                 <div id='ingredientTemplate' class="form-group" style="display: none;">
-                        <input type='text' class='amount form-control' placeholder='amount' oninput="checkIsLast(this);">
-                        <div class='unit form-control dropdown'>
-                            <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                                Dropdown
-                            </button>
-                            <ul class="dropdown-menu">
-                                {% for measureClass in measureArray %}
-                                    <li class="dropdown-header">{{ measureClass.getMeasureName }}</li>
-                                    {% for unit in measureClass.getAvailableMeasureUnits|keys %}
-                                        <li><a href="#">{{ unit }}</a></li>
-                                    {% endfor %}
-                                    {% if not loop.last %}
-                                        <li role="separator" class="divider"></li>
-                                    {% endif %}
+                    <input type='text' class='amount form-control' placeholder='amount' oninput="checkIsLast(this);">
+                    <div class='unit form-control dropdown'>
+                        <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                            Dropdown
+                        </button>
+                        <ul class="dropdown-menu">
+                            {% for measureClass in measureArray %}
+                                <li class="dropdown-header">{{ measureClass.getMeasureName }}</li>
+                                {% for unit in measureClass.getAvailableMeasureUnits|keys %}
+                                    <li><a href="#">{{ unit }}</a></li>
                                 {% endfor %}
-                            </ul>
-                        </div>
-                        <input type='text' class='name form-control' placeholder='name' oninput="checkIsLast(this);">
+                                {% if not loop.last %}
+                                    <li role="separator" class="divider"></li>
+                                {% endif %}
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    <input type='text' class='name form-control' placeholder='name' oninput="checkIsLast(this);">
                 </div>
         </div>
     </form>
@@ -77,6 +77,15 @@
         
         function addIngredient() {
             var newIngredient = removableClonedFrom( $("#ingredientTemplate") );
+            
+            newIngredient.find('.dropdown .dropdown-menu li a').each(function(){
+                $(this).click(function(){
+                    console.log('clicked');
+                    var selText = $(this).text();
+                    $(this).parents('.dropdown').find('.dropdown-toggle').html(selText);
+                })
+            });
+            
             newIngredient.addClass('ingredientListItem');
             $("#ingredientList").append(newIngredient);
         }
