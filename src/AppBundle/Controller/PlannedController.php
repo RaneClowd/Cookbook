@@ -41,19 +41,20 @@ class PlannedController extends Controller
     }
     
     protected function groceryListForRecipes($recipes) {
-        $list = [];
+        $groceryList = [];
         foreach ($recipes as $recipe) {
             foreach ($recipe->getIngredients() as $ingredient) {
                 $foodItem = $ingredient->getFooditem();
                 
-                if ( !array_key_exists($foodItem->getName(), $list)) {
-                    $list[$foodItem->getName()] = $ingredient->getAmount();
+                if ( !array_key_exists($foodItem->getName(), $groceryList)) {
+                    $groceryList[$foodItem->getName()] = clone $ingredient;
                 } else {
-                    // TODO: set up structure for adding amounts based on units
+                    $existingIngredient = $groceryList[$foodItem->getName()];
+                    $existingIngredient->setAmount($existingIngredient->getAmount() + $ingredient->getAmount());
                 }
             }
         }
         
-        return $list;
+        return $groceryList;
     }
 }

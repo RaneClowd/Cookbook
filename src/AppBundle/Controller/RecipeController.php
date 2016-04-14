@@ -77,7 +77,11 @@ class RecipeController extends Controller
                 $em->persist($foodItem);
                 
                 $ingredient = new Ingredient();
-                $ingredient->setMeasure($dataItem->unit);
+                
+                if (isset($dataItem->unit)) {
+                    $ingredient->setUnit($dataItem->unit);
+                }
+                    
                 $ingredient->setAmount($dataItem->amount);
                 $ingredient->setFooditem($foodItem);
                 $em->persist($ingredient);

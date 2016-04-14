@@ -10,6 +10,13 @@ use AppBundle\ViewEntity\Measure;
  */
 class Ingredient
 {
+    public static function withAmount($amount, $unit) {
+        $instance = new Ingredient();
+        $instance->setAmount($amount);
+        $instance->setUnit($unit);
+        return $instance;
+    }
+    
     /**
      * @var int
      *
@@ -28,7 +35,7 @@ class Ingredient
     /**
      * @var string
      *
-     * @ORM\Column(name="unit", type="string", length=255)
+     * @ORM\Column(name="unit", type="string", length=255, nullable=true)
      */
     private $unit;
     
@@ -123,6 +130,13 @@ class Ingredient
     public function getFooditem()
     {
         return $this->fooditem;
+    }
+    
+    public function newInstanceByAdding($ingredient)
+    {
+        $result = clone $this;
+        $result->setAmount($result->getAmount() + $ingredient->getAmount());
+        return $result;
     }
     
     private function updateMeasure()

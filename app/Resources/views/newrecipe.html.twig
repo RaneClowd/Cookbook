@@ -7,11 +7,12 @@
         <div id="ingredientList">
                 <div id='ingredientTemplate' class="form-group" style="display: none;">
                     <input type='text' class='amount form-control' placeholder='amount' oninput="checkIsLast(this);">
-                    <div class='unit form-control dropdown'>
-                        <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                            Dropdown
+                    <div class='form-control dropdown'>
+                        <button class="btn btn-default dropdown-toggle unit" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                         </button>
                         <ul class="dropdown-menu">
+                            <li><a href="#">--</a></li>
+                            <li role="separator" class="divider"></li>
                             {% for measureClass in measureArray %}
                                 <li class="dropdown-header">{{ measureClass.getMeasureName }}</li>
                                 {% for unit in measureClass.getAvailableMeasureUnits|keys %}
@@ -80,11 +81,11 @@
             
             newIngredient.find('.dropdown .dropdown-menu li a').each(function(){
                 $(this).click(function(){
-                    console.log('clicked');
                     var selText = $(this).text();
                     $(this).parents('.dropdown').find('.dropdown-toggle').html(selText);
-                })
+                });
             });
+            newIngredient.find('.dropdown .dropdown-menu li:first a').click();
             
             newIngredient.addClass('ingredientListItem');
             $("#ingredientList").append(newIngredient);
@@ -105,7 +106,11 @@
         }
         
         function newIngredient(amount, unit, name) {
-            return {amount:amount, unit:unit, name:name};
+            if (unit !== "--") {
+                return {amount:amount, unit:unit, name:name};
+            } else {
+                return {amount:amount, name:name};
+            }
         }
         
         function showSaving(saveBtn) {
@@ -146,10 +151,10 @@
             var recipe = newRecipe($("#recipeName").val());
             $(".ingredientListItem").each(function() {
                 var amountVal = $(this).children(".amount").val();
-                var unitVal = $(this).children(".unit").val();
+                var unitVal = $(this).find(".unit").text();
                 var nameVal = $(this).children(".name").val();
                 
-                if (amountVal != '' || unitVal != '' || nameVal != '') {
+                if (amountVal != '' || unitVal != '--' || nameVal != '') {
                     var ingredient = newIngredient(amountVal, unitVal, nameVal);
                     recipe.ingredients.push(ingredient);
                 } else {

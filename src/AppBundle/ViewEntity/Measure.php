@@ -24,12 +24,12 @@ abstract class Measure
     public static function measureTypeForUnit($unit)
     {
         foreach(Measure::allMeasureClasses() as $measureClass) {
-            if (in_array($unit, $measureClass::getAvailableMeasureUnits)) {
+            if (array_key_exists($unit, $measureClass::getAvailableMeasureUnits())) {
                 return new $measureClass();
             }
         }
         
-        throw new Exception('Unrecognized measurement type: '.$type);
+        throw new \Exception('Unrecognized measurement type: '.$unit);
     }
     
     public function getAmountInLargestUnit()
@@ -56,7 +56,7 @@ abstract class Measure
     {
         $conversionScale = $this->getAvailableMeasureUnits()[$amountUnit];
         if (empty($conversionScale)) {
-            throw new Exception('Unit type not found: '.$amountUnit);
+            throw new \Exception('Unit type not found: '.$amountUnit);
         }
         
         $this->amount = $newAmount * $conversionScale;
