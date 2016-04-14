@@ -10,10 +10,12 @@ use AppBundle\ViewEntity\Measure;
  */
 class Ingredient
 {
-    public static function withAmount($amount, $unit) {
+    public static function ingredient($amount, $unit, $food) {
         $instance = new Ingredient();
         $instance->setAmount($amount);
         $instance->setUnit($unit);
+        $instance->setFoodItem(FoodItem::fooditem($food));
+        
         return $instance;
     }
     
@@ -68,8 +70,7 @@ class Ingredient
     public function setUnit($unit)
     {
         $this->unit = $unit;
-        $this->updateMeasure();
-
+        
         return $this;
     }
 
@@ -93,8 +94,7 @@ class Ingredient
     public function setAmount($amount)
     {
         $this->amount = $amount;
-        $this->updateMeasure();
-
+        
         return $this;
     }
 
@@ -130,23 +130,5 @@ class Ingredient
     public function getFooditem()
     {
         return $this->fooditem;
-    }
-    
-    public function newInstanceByAdding($ingredient)
-    {
-        $result = clone $this;
-        $result->setAmount($result->getAmount() + $ingredient->getAmount());
-        return $result;
-    }
-    
-    private function updateMeasure()
-    {
-        if (empty($this->measure) && !empty($this->amount) && !empty($this->unit)) {
-            $this->measure = Measure::measureTypeForUnit($this->unit);
-        }
-        
-        if ( !empty($this->measure)) {
-            $this->measure->setAmount($this->amount, $this->unit);
-        }
     }
 }

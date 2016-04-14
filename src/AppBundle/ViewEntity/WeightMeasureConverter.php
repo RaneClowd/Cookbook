@@ -2,7 +2,7 @@
 
 namespace AppBundle\ViewEntity;
 
-class WeightMeasure extends Measure
+class WeightMeasureConverter extends MeasureConverter
 {
     public static function getMeasureName()
     {
@@ -13,10 +13,5 @@ class WeightMeasure extends Measure
         return array("gram"     =>    1.0,
                      "ounce"    =>   28.3495,
                      "pound"    =>  453.592);
-    }
-    
-    public function setAmount($newAmount, $amountUnit = "gram")
-    {
-        parent::setAmount($newAmount, $amountUnit);
     }
 }

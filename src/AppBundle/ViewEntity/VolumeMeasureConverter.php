@@ -2,7 +2,7 @@
 
 namespace AppBundle\ViewEntity;
 
-class VolumeMeasure extends Measure
+class VolumeMeasureConverter extends MeasureConverter
 {
     public static function getMeasureName()
     {
@@ -14,10 +14,5 @@ class VolumeMeasure extends Measure
                      "teaspoon"     =>   4.9289,
                      "tablespoon"   =>  14.7868,
                      "cup"          => 236.588);
-    }
-    
-    public function setAmount($newAmount, $amountUnit = "ml")
-    {
-        parent::setAmount($newAmount, $amountUnit);
     }
 }

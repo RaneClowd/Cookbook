@@ -12,6 +12,13 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class FoodItem
 {
+    public static function fooditem($name)
+    {
+        $fooditem = new FoodItem();
+        $fooditem->setName($name);
+        return $fooditem;
+    }
+    
     /**
      * @var int
      *
