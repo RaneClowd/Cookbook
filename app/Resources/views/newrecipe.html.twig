@@ -2,6 +2,7 @@
 
 {% block body %}
     <input id='recipeName' type='text' class="form-control" placeholder='Recipe Name'>
+    <input id='recipeSource' type='text' class="form-control" placeholder='source'>
     <hr>
     <form class="form-inline" role="form">
         <div id="ingredientList">
@@ -102,8 +103,8 @@
             $(sender).parent().remove();
         }
         
-        function newRecipe(name) {
-            return {name:name, ingredients:[], steps:[]};
+        function newRecipe(name, source) {
+            return {name:name, source:source, ingredients:[], steps:[]};
         }
         
         function newIngredient(amount, unit, name, note) {
@@ -133,6 +134,7 @@
             $(".stepListItem").remove();
             
             $('#recipeName').val('');
+            $('#recipeSource').val('');
             addIngredient();
             addStep();
             
@@ -149,7 +151,7 @@
         function save() {
             $('.alert:visible').remove();
             
-            var recipe = newRecipe($("#recipeName").val());
+            var recipe = newRecipe($("#recipeName").val(), $("#recipeSource").val());
             $(".ingredientListItem").each(function() {
                 var amountVal = $(this).children(".amount").val();
                 var unitVal = $(this).find(".unit").text();

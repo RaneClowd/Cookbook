@@ -28,6 +28,13 @@ class Recipe
      * @ORM\Column(name="name", type="string", length=255)
      */
     private $name;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="source", type="string", length=255, nullable=true)
+     */
+    private $source;
     
     /**
      * @ORM\ManyToMany(targetEntity="Ingredient")
@@ -85,6 +92,30 @@ class Recipe
     public function getName()
     {
         return $this->name;
+    }
+
+    /**
+     * Set source
+     *
+     * @param string $source
+     *
+     * @return Recipe
+     */
+    public function setSource($source)
+    {
+        $this->source = $source;
+
+        return $this;
+    }
+
+    /**
+     * Get source
+     *
+     * @return string
+     */
+    public function getSource()
+    {
+        return $this->source;
     }
 
     /**

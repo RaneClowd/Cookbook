@@ -20,6 +20,9 @@
     {% for step in recipe.steps %}
         <p><strong>#{{ step.position }}</strong> {{ step.description }}</p>
     {% endfor %}
+    {% if recipe.source|length > 0 %}
+        <a href="{{ recipe.source }}">Source</a>
+    {% endif %}
 {% endblock %}
 
 {% block javascripts %}

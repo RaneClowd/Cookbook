@@ -69,6 +69,7 @@ class RecipeController extends Controller
             
             $recipe = new Recipe();
             $recipe->setName($data->name);
+            $recipe->setSource($data->source);
             $em->persist($recipe);
             
             foreach($data->ingredients as $dataItem) {
