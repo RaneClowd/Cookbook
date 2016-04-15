@@ -5,7 +5,7 @@
         {{ recipe.name }}<br>
     {% endfor %}
     <hr>
-    {% for item, ingredient in groceries %}
-        {{ ingredient.amount }} {{ ingredient.unit }} {{ item }}<br>
+    {% for item, ingredientPool in groceries %}
+        {{ ingredientPool.amount|number_format(1) }} {{ ingredientPool.unit }} {{ item }}<br>
     {% endfor %}
 {% endblock %}

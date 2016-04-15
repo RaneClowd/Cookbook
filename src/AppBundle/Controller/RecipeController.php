@@ -12,7 +12,7 @@ use AppBundle\Entity\Step;
 use AppBundle\Entity\Ingredient;
 use AppBundle\Entity\FoodItem;
 use AppBundle\ViewEntity\Cart;
-use AppBundle\ViewEntity\Measure;
+use AppBundle\ViewEntity\MeasureConverter;
 
 class RecipeController extends Controller
 {
@@ -22,7 +22,7 @@ class RecipeController extends Controller
     public function newRecipeAction()
     {
         $measures = [];
-        foreach(Measure::allMeasureClasses() as $measureTypeClass) {
+        foreach(MeasureConverter::allMeasureClasses() as $measureTypeClass) {
             array_push($measures, new $measureTypeClass());
         }
         return $this->render('newrecipe.html.twig', array( 'measureArray' => $measures));
@@ -83,6 +83,7 @@ class RecipeController extends Controller
                 }
                     
                 $ingredient->setAmount($dataItem->amount);
+                $ingredient->setNote($dataItem->note);
                 $ingredient->setFooditem($foodItem);
                 $em->persist($ingredient);
                 

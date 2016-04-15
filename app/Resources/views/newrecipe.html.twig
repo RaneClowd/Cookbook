@@ -25,6 +25,7 @@
                         </ul>
                     </div>
                     <input type='text' class='name form-control' placeholder='name' oninput="checkIsLast(this);">
+                    (<input type='text' class='note form-control' placeholder='note' oninput="checkIsLast(this);">)
                 </div>
         </div>
     </form>
@@ -105,11 +106,11 @@
             return {name:name, ingredients:[], steps:[]};
         }
         
-        function newIngredient(amount, unit, name) {
+        function newIngredient(amount, unit, name, note) {
             if (unit !== "--") {
-                return {amount:amount, unit:unit, name:name};
+                return {amount:amount, unit:unit, name:name, note:note};
             } else {
-                return {amount:amount, name:name};
+                return {amount:amount, name:name, note:note};
             }
         }
         
@@ -153,9 +154,10 @@
                 var amountVal = $(this).children(".amount").val();
                 var unitVal = $(this).find(".unit").text();
                 var nameVal = $(this).children(".name").val();
+                var noteVal = $(this).children(".note").val();
                 
                 if (amountVal != '' || unitVal != '--' || nameVal != '') {
-                    var ingredient = newIngredient(amountVal, unitVal, nameVal);
+                    var ingredient = newIngredient(amountVal, unitVal, nameVal, noteVal);
                     recipe.ingredients.push(ingredient);
                 } else {
                     $(this).remove();

@@ -8,6 +8,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 use AppBundle\ViewEntity\Cart;
+use AppBundle\ViewEntity\IngredientPool;
 
 class PlannedController extends Controller
 {
@@ -20,8 +21,7 @@ class PlannedController extends Controller
         $recipeRepository = $this->getDoctrine()->getRepository('AppBundle:Recipe');
         $plannedRecipes = $recipeRepository->findByIdsJoinedToFooditems($recipe_ids);
         
-        return $this->render('plannedRecipes.html.twig', array('plannedRecipes' => $plannedRecipes,
-                                                               'groceries' => $this->groceryListForRecipes($plannedRecipes)));
+        return $this->render('plannedRecipes.html.twig', array('plannedRecipes' => $plannedRecipes, 'groceries' => $this->groceryListForRecipes($plannedRecipes)));
     }
     
     /**
@@ -47,10 +47,11 @@ class PlannedController extends Controller
                 $foodItem = $ingredient->getFooditem();
                 
                 if ( !array_key_exists($foodItem->getName(), $groceryList)) {
-                    $groceryList[$foodItem->getName()] = clone $ingredient;
+                    $newPool = new IngredientPool($ingredient->getAmount(), $ingredient->getUnit(), $foodItem->getName());
+                    $groceryList[$foodItem->getName()] = $newPool;
                 } else {
-                    $existingIngredient = $groceryList[$foodItem->getName()];
-                    $existingIngredient->setAmount($existingIngredient->getAmount() + $ingredient->getAmount());
+                    $existingPool = $groceryList[$foodItem->getName()];
+                    $existingPool->addIngredient($ingredient);
                 }
             }
         }

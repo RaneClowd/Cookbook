@@ -47,6 +47,13 @@ class Ingredient
      * @ORM\Column(name="amount", type="integer")
      */
     private $amount;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="note", type="string", length=255, nullable=true)
+     */
+    private $note;
     
     private $measure;
 
@@ -106,6 +113,30 @@ class Ingredient
     public function getAmount()
     {
         return $this->amount;
+    }
+
+    /**
+     * Set note
+     *
+     * @param string $note
+     *
+     * @return Ingredient
+     */
+    public function setNote($note)
+    {
+        $this->note = $note;
+        
+        return $this;
+    }
+
+    /**
+     * Get note
+     *
+     * @return string
+     */
+    public function getNote()
+    {
+        return $this->note;
     }
 
     /**

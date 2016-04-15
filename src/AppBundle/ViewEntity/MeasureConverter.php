@@ -26,7 +26,10 @@ abstract class MeasureConverter
     {
         foreach(MeasureConverter::allMeasureClasses() as $measureClass) {
             if (array_key_exists($unit, $measureClass::getAvailableMeasureUnits())) {
-                return new $measureClass($amount, $unit);
+                $measure = new $measureClass();
+                $measure->unit = $unit;
+                $measure->amount = $amount;
+                return $measure;
             }
         }
         
@@ -44,12 +47,6 @@ abstract class MeasureConverter
                 return $factorOne <=> $factorTwo;
             }
         }
-    }
-    
-    public function __construct($amount, $unit)
-    {
-        $this->unit = $unit;
-        $this->amount = $amount;
     }
     
     public function convertTo($unit)
