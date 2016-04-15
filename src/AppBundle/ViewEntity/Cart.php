@@ -14,7 +14,6 @@ class Cart
         $cart = $request->getSession()->get('planned_meals');
         if (empty($cart)) {
             $cart = new Cart();
-            dump($cart);
             $request->getSession()->set('planned_meals', $cart);
         }
         return $cart;
