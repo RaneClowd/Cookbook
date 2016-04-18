@@ -1,8 +1,8 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <input id='recipeName' type='text' class="form-control" placeholder='Recipe Name'>
-    <input id='recipeSource' type='text' class="form-control" placeholder='source'>
+    <input id='recipeName' type='text' class="form-control" placeholder='Recipe Name' value="{{ recipe.name }}">
+    <input id='recipeSource' type='text' class="form-control" placeholder='source' value="{{ recipe.source }}">
     <hr>
     <form class="form-inline" role="form">
         <div id="ingredientList">
@@ -28,14 +28,44 @@
                     <input type='text' class='name form-control' placeholder='name' oninput="checkIsLast(this);">
                     (<input type='text' class='note form-control' placeholder='note' oninput="checkIsLast(this);">)
                 </div>
+                {% for ingredient in recipe.ingredients %}
+                    <div class="form-group ingredientListItem">
+                        <input type='text' class='amount form-control' placeholder='amount' oninput="checkIsLast(this);" value="{{ ingredient.amount }}">
+                        <div class='form-control dropdown'>
+                            <button class="btn btn-default dropdown-toggle unit" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                {% if ingredient.unit %}{{ ingredient.unit }}{% else %}--{% endif %}
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><a href="#">--</a></li>
+                                <li role="separator" class="divider"></li>
+                                {% for measureClass in measureArray %}
+                                    <li class="dropdown-header">{{ measureClass.getMeasureName }}</li>
+                                    {% for unit in measureClass.getAvailableMeasureUnits|keys %}
+                                        <li><a href="#">{{ unit }}</a></li>
+                                    {% endfor %}
+                                    {% if not loop.last %}
+                                        <li role="separator" class="divider"></li>
+                                    {% endif %}
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        <input type='text' class='name form-control' placeholder='name' oninput="checkIsLast(this);" value="{{ ingredient.fooditem.name }}">
+                        (<input type='text' class='note form-control' placeholder='note' oninput="checkIsLast(this);" value="{{ ingredient.note }}">)
+                    </div>
+                {% endfor %}
         </div>
     </form>
     <hr>
     <form class="form-inline" role="form">
         <div id="stepList">
-                <div id='stepTemplate' style="display: none;">
-                        <textarea rows='5' cols='80' class="form-control" oninput="checkIsLast(this);"></textarea>
+            <div id='stepTemplate' style="display: none;">
+                <textarea rows='5' cols='80' class="form-control" oninput="checkIsLast(this);"></textarea>
+            </div>
+            {% for step in recipe.steps %}
+                <div class="stepListItem">
+                    <textarea rows='5' cols='80' class="form-control" oninput="checkIsLast(this);">{{ step.description }}</textarea>
                 </div>
+            {% endfor %}
         </div>
     </form>
     <br>
@@ -51,6 +81,13 @@
         $(document).ready(function() {
             addIngredient();
             addStep();
+            
+            $('.ingredientListItem').find('.dropdown .dropdown-menu li a').each(function(){
+                $(this).click(function(){
+                    var selText = $(this).text();
+                    $(this).parents('.dropdown').find('.dropdown-toggle').html(selText);
+                });
+            });
             
             $('#ingredientList').bind('addNew', function() {
                 addIngredient();
@@ -178,7 +215,11 @@
             var notifier = showSaving(saveBtn);
             
             $.ajax({
-                url:"{{ path("save_recipe") }}",
+                {% if recipe.name %}
+                   url:"{{ path("update_recipe", { 'id': recipe.id }) }}",
+               {% else %}
+                    url:"{{ path("save_recipe") }}",
+               {% endif %}
                 type: 'post',
                 data: JSON.stringify(recipe),
                 contentType: 'application/json',

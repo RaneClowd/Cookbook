@@ -31,6 +31,14 @@ class Step
      * @ORM\Column(name="position", type="smallint")
      */
     private $position;
+    
+    public static function step($position, $desc)
+    {
+        $newStep = new Step();
+        $newStep->setPosition($position);
+        $newStep->setDescription($desc);
+        return $newStep;
+    }
 
     /**
      * Get id

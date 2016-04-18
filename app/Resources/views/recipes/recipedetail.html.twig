@@ -21,8 +21,9 @@
         <p><strong>#{{ step.position }}</strong> {{ step.description }}</p>
     {% endfor %}
     {% if recipe.source|length > 0 %}
-        <a href="{{ recipe.source }}">Source</a>
+        <a href="{{ recipe.source }}">Source</a><br>
     {% endif %}
+    <a href="{{ path('edit_recipe', {'id': recipe.id}) }}">Edit</a>
 {% endblock %}
 
 {% block javascripts %}
