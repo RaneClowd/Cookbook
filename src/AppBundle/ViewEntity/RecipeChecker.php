@@ -4,6 +4,7 @@ namespace AppBundle\ViewEntity;
 
 use AppBundle\Entity\Recipe;
 use AppBundle\Entity\Ingredient;
+use AppBundle\Entity\Step;
 
 class RecipeChecker
 {
@@ -49,34 +50,68 @@ class RecipeChecker
     public function checkForIngredients($ingredientsList)
     {
         foreach ($this->recipe->getIngredients() as $ingredient) {
-            foreach ($ingredientsList as $listItem) {
+            $ingredient_found = false;
+            foreach ($ingredientsList as $itemIndex => $listItem) {
                 if ($ingredient->getFoodItem()->getName() == $listItem->name) {
-                    $index = array_search($listItem, $ingredientsList);
-                    unset($ingredientsList[$index]);
+                    unset($ingredientsList[$itemIndex]);
                     
+                    $this->updateIngredient($ingredient, $listItem);
+                    
+                    $ingredient_found = true;
                     break;
                 }
             }
             
-            // No matching ingredient found
-            $this->ingredientNeedsRemoval($ingredient);
+            if (!$ingredient_found) {
+                $this->ingredientNeedsRemoval($ingredient);
+            }
         }
         
         foreach ($ingredientsList as $listItem) {
-            $ingredient = Ingredient::ingredient($listItem->amount, $listItem->unit, $listItem->name);
+            if (isset($listItem->unit)) {
+                $ingredient = Ingredient::ingredient($listItem->amount, $listItem->unit, $listItem->name);
+            } else {
+                $ingredient = Ingredient::ingredient($listItem->amount, null, $listItem->name);
+            }
             $ingredient->setNote($listItem->note);
             
             array_push($this->ingredientsNeeded, $ingredient);
         }
     }
     
-    public function checkForSteps($steps)
+    public function checkForSteps($stepList)
     {
+        for ($index = 0; $index < count($stepList); $index += 1) {
+            if ($index < count($this->recipe->getSteps())) {
+                $recipe_step = $this->recipe->getSteps()[$index];
+                $recipe_step->setDescription($stepList[$index]);
+            } else {
+                $step = Step::step($index + 1, $stepList[$index]);
+                
+                array_push($this->stepsNeeded, $step);
+            }
+        }
         
+        for ($index = count($stepList); $index < count($this->recipe->getSteps()); $index += 1) {
+            $this->stepNeedsRemoval($this->recipe->getSteps()[$index]);
+        }
     }
     
-    public function ingredientNeedsRemoval(Ingredient $ingredient)
+    private function updateIngredient($ingredient, $listItem)
+    {
+        $ingredient->setAmount($listItem->amount);
+        if (isset($listItem->unit)) $ingredient->setUnit($listItem->unit);
+        else $ingredient->setUnit(null);
+        $ingredient->setNote($listItem->note);
+    }
+    
+    private function ingredientNeedsRemoval(Ingredient $ingredient)
     {
         array_push($this->ingredientsToRemove, $ingredient);
+    }
+    
+    private function stepNeedsRemoval(Step $step)
+    {
+        array_push($this->stepsToRemove, $step);
     }
 }

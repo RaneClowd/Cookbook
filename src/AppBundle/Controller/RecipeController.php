@@ -8,6 +8,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 use AppBundle\Entity\Recipe;
+use AppBundle\ViewEntity\RecipeChecker;
 use AppBundle\Entity\Step;
 use AppBundle\Entity\Ingredient;
 use AppBundle\Entity\FoodItem;
@@ -77,55 +78,32 @@ class RecipeController extends Controller
             $recipe->setName($data->name);
             $recipe->setSource($data->source);
 
-            foreach($data->ingredients as $dataItem) {
-                foreach ($recipe->getIngredients() as $oldIngredient) {
-                    if ($oldIngredient->getFooditem()->getName() == $dataItem->name) {
-                        $ingredient = $oldIngredient;
-                        break;
-                    }
-                }
-
-                if (!isset($ingredient)) {
-                    $foodItem = new FoodItem();
-                    $em->persist($foodItem);
-
-                    $ingredient = new Ingredient();
-                    $em->persist($ingredient);
-
-                    $recipe->addIngredient($ingredient);
-                } else {
-                    $foodItem = $ingredient->getFooditem();
-                }
-                $foodItem->setName($dataItem->name);
-
-
-                if (isset($dataItem->unit)) {
-                    $ingredient->setUnit($dataItem->unit);
-                }
-
-                $ingredient->setAmount($dataItem->amount);
-                $ingredient->setNote($dataItem->note);
-                $ingredient->setFooditem($foodItem);
-
-            }
+            $checker = new RecipeChecker($recipe);
+            $checker->checkForIngredients($data->ingredients);
+            $checker->checkForSteps($data->steps);
             
+            foreach ($checker->getIngredientsNeeded() as $ingredient) {
+                $em->persist($ingredient);
+                $em->persist($ingredient->getFoodItem());
+                $recipe->addIngredient($ingredient);
+            }
+            foreach ($checker->getIngredientsToRemove() as $ingredient) {
+                $recipe->removeIngredient($ingredient);
+                $em->remove($ingredient);
+            }
+            foreach ($checker->getStepsNeeded() as $step) {
+                $em->persist($step);
+                $recipe->addStep($step);
+            }
+            foreach ($checker->getStepsToRemove() as $step) {
+                $recipe->removeStep($step);
+                $em->remove($step);
+            }
             
             $em->flush();
         }
-
-        /*$stepOrder = 1;
-        foreach($data->steps as $stepDescription) {
-            $step = new Step();
-            $step->setDescription($stepDescription);
-            $step->setPosition($stepOrder);
-            $em->persist($step);
-
-            $recipe->addStep($step);
-
-            $stepOrder += 1;
-        }*/
         
-        return new Response('bob');
+        return new Response(json_encode('bob'));
     }
     
     /**
@@ -183,6 +161,6 @@ class RecipeController extends Controller
         }
         
         $em->flush();
-        return new Response('bob');
+        return new Response(json_encode('bob'));
     }
 }

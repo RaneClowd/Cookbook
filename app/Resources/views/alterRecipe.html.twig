@@ -32,9 +32,7 @@
                     <div class="form-group ingredientListItem">
                         <input type='text' class='amount form-control' placeholder='amount' oninput="checkIsLast(this);" value="{{ ingredient.amount }}">
                         <div class='form-control dropdown'>
-                            <button class="btn btn-default dropdown-toggle unit" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                                {% if ingredient.unit %}{{ ingredient.unit }}{% else %}--{% endif %}
-                            </button>
+                            <button class="btn btn-default dropdown-toggle unit" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">{% if ingredient.unit %}{{ ingredient.unit }}{% else %}--{% endif %}</button>
                             <ul class="dropdown-menu">
                                 <li><a href="#">--</a></li>
                                 <li role="separator" class="divider"></li>
