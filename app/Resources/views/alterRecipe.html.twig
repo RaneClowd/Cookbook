@@ -73,7 +73,10 @@
 
 {% block javascripts %}
     {{ parent() }}
-    
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/3.2.0/math.min.js"></script>
+    <script src="{{ asset('javascript/recipe.js') }}"></script>
+
     <script>
         var loadFinished = false;
         $(document).ready(function() {
@@ -142,14 +145,6 @@
             return {name:name, source:source, ingredients:[], steps:[]};
         }
         
-        function newIngredient(amount, unit, name, note) {
-            if (unit !== "--") {
-                return {amount:amount, unit:unit, name:name, note:note};
-            } else {
-                return {amount:amount, name:name, note:note};
-            }
-        }
-        
         function showSaving(saveBtn) {
             var notifier = $('<span class="label label-default"></span>')
             notifier.html("Saving...");
@@ -188,13 +183,13 @@
             
             var recipe = newRecipe($("#recipeName").val(), $("#recipeSource").val());
             $(".ingredientListItem").each(function() {
-                var amountVal = $(this).children(".amount").val();
-                var unitVal = $(this).find(".unit").text();
-                var nameVal = $(this).children(".name").val();
-                var noteVal = $(this).children(".note").val();
+                var amount = $(this).children(".amount").val();
+                var unit = $(this).find(".unit").text();
+                var name = $(this).children(".name").val();
+                var note = $(this).children(".note").val();
+                var ingredient = new Ingredient(amount, unit, name, note);
                 
-                if (amountVal != '' || unitVal != '--' || nameVal != '') {
-                    var ingredient = newIngredient(amountVal, unitVal, nameVal, noteVal);
+                if (amount != '' || unit != '--' || name != '') {
                     recipe.ingredients.push(ingredient);
                 } else {
                     $(this).remove();
